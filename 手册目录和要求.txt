@@ -1,0 +1,83 @@
+01-知识工程概述
+整体架构（用mermaid图表示）
+1.1 项目简介
+需要基于对项目的整体了解总结
+1.2核心特性
+需要基于对项目的整体了解总结
+1.3 适用场景
+需要基于对项目的整体了解总结
+02-安装与配置
+2.1 环境要求
+2.1.1python版本：要求Python3.11，推荐Python3.11.4
+2.1.2硬件要求：要求CPU X86-64,arm64,NPU(可选依赖)：Ascend 910B系列
+2.1.3核心依赖：需要阅读项目的pythonproject.toml文件总结
+2.2 安装步骤
+2.2.1 从源码构建
+2.2.2 基于whl包安装
+03-QuickStart
+3.1 Hello World
+文档撰写指南：当前项目是用户通过配置yaml文件，然后通过pipelinebuilder来执行，在tests/目录下的子目录里有大量的yaml文件告诉如何使用，阅读代码和这些示例之后，完成下面章节的撰写
+3.1.1 创建YAML配置文件
+3.1.2 执行Pipeline
+3.2 基本使用流程
+3.2.1 Pipeline执行流程
+3.2.2 完整YAML示例
+3.2.3 在Python中使用PipelineBuilder执行YAML配置
+04-PipelineBuilder使用指南
+文档撰写指南：由于PipelineBuilder才是最终yaml的执行入口，因此需要让用户了解PipelineBuilder的使用，同时在此章节介绍YAML配置文件里面的配置参数有哪些，含义是什么，这些信息可用通过阅读pipelinebuilder源码和tests目录下的yaml配置示例了解，根据了解撰写下面的子章节：
+4.1 PipelineBuilder使用方法
+4.1.1 基础用法
+4.1.2 核心方法
+4.1.3 自定义算子路径配置
+4.2 YAML配置格式详解
+4.2.1 完整配置结构
+4.2.2 op_type 参数说明
+4.2.3 depends语法
+4.3 算子编排与执行
+4.3.1算子类型与处理模式
+在这里介绍Mapper，FlatMaper，GroupMapper，Filter，duplicator几种基本算子类型和含义
+4.3.2 资源配额
+介绍在yaml中如何配置资源，包括cpu，memory，npu资源
+4.3.3 运行时环境变量
+介绍yaml中如何配置环境变量
+4.3.4 执行流程图
+可用用mermaid表示，总体流程应该是PipelineBuilder解析YAML配置->全局上下文初始化（jiutian.init)->算子依赖拓扑排序->按照依赖顺序执行算子链->返回结果DataFrame
+05-内置算子
+文档撰写指南：这是最重要的章节，在此处，需要介绍src/knowledge_operaros/ops/下面的算子，这个目录下面有connector,duplicator,filter,mapper,functions几个子文件夹，其中，functions文件夹在撰写本章节时不需要用到，请勿在撰写本章节时使用functions目录下的内容。其余的内容组织为以下分类：
+5.1 Mapper算子
+请阅读mappers目录下的算子完成本小节内容撰写。mappers目录下的算子命名遵循特定规律，都是模态_操作_mapper.py，所以按照模态进行分类（目前是text,audio,video，之后可能增加），但是注意，并非所有mapper算子都需要写到文档中，只写用户可用用到的实现类，而不写用不到的基类，区别是，实现类都使用了算子注册机制进行了注册，但是基类mapper算子没有进行注册。
+5.1.1 文本处理算子
+5.1.2 音频处理算子
+5.1.3 视频处理算子
+5.1.4 udf算子
+除了指定模态的算子，还有一些注册的udf相关的算子，可以分类在此处
+5.2 filter算子
+这个算子在filter目录下，只关注里面注册的算子
+5.3 duplicator算子
+算子在duplicator目录下，只关注里面注册的算子
+5.4 数据存储与落盘
+和数据读写相关的算子在connecor目录下，根据对接的数据源类型分类，比如对接es，对接duckdb等等，只关注注册的算子
+06-自定义算子的开发和使用
+这同样是非常重要的章节，之前提到的mapper，filter，duplicator，connectors算子都是可用自定义的，数据处理算子的基类都在src/knowledge_operators/ops/base_op.py中，可以读取这个文件，加上tests目录下有自定义算子相关示例，撰写自定义算子的开发和使用。除了自定义数据处理算子，还有数据读写的算子，在tests目录下同样有示例如何自定义datasource和datasink。
+本章节内容主要分为以下部分：
+6.1 自定义开发流程
+6.1.1开发步骤
+讲一下如何创建算子文件，定义算子类，注册算子，配置yaml和使用
+6.1.2算子基类说明
+把base_op.py下面的基类算子列表格展示一下
+6.2 自定义数据处理算子开发
+6.2.1 自定义Mapper算子
+给一个示例，tests目录下有例子
+6.2.2自定义FlatMapper算子
+6.2.3自定义GroupMapper算子
+6.2.4自定义filter算子
+6.3 自定义datasource和datasink
+6.3.1 自定义datasource
+tests目录下有例子
+6.3.2 自定义datasink
+tests目录下有例子，如果没有，根据你的理解编写
+6.4 自定义算子的使用
+6.4.1 配置自定义算子路径
+tests目录下有custom算子使用示例
+6.4.2 注意事项
+可以写一些注意事项，比如算子名称注册的时候必须唯一，yaml配置的算子名称必须与注册时一致等等。
